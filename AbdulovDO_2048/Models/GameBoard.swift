@@ -32,51 +32,82 @@ struct GameBoard {
 
      - Parameter direction:  Направление хода игрока
      */
-    mutating func move(_ direction: MoveDirection) {
+    mutating func move(_ direction: MoveDirection) -> Bool {
+        var moved = false
         switch direction {
         case .up:
-            moveUp()
+            moved = moveUp()
         case .down:
-            moveDown()
+            moved = moveDown()
         case .left:
-            moveLeft()
+            moved = moveLeft()
         case .right:
-            moveRight()
+            moved = moveRight()
+        }
+        if !moved {
+            return false
         }
         generateTile() // Генерируем новую плитку после движения
+        return true
     }
     
     
-    mutating private func moveLeft() {
+    mutating private func moveLeft() -> Bool {
+        var moveMade = false
         for i in 0..<rows {
-            tiles[i] = mergeRow(tiles[i])
+            let merged = mergeRow(tiles[i])
+            if (tiles[i] != merged) {
+                moveMade = true
+                tiles[i] = merged
+            }
         }
+        return moveMade
     }
     
-    mutating private func moveRight() {
+    mutating private func moveRight() -> Bool {
+        var moveMade = false
+        
         for i in 0..<rows {
-            tiles[i] = mergeRow(tiles[i].reversed()).reversed()
+            let merged: [Tile] = mergeRow(tiles[i].reversed()).reversed()
+            if tiles[i] != merged {
+                moveMade = true;
+                tiles[i] = merged
+            }
         }
+        return moveMade
     }
     
-    mutating private func moveUp() {
+    mutating private func moveUp() -> Bool {
+        var moveMade = false
+        
         for j in 0..<columns {
             let column = tiles.map { $0[j] }
             let mergedColumn = mergeRow(column)
             for i in 0..<rows {
+                if (tiles[i][j] != mergedColumn[i]) {
+                    moveMade = true;
+                }
                 tiles[i][j] = mergedColumn[i]
             }
         }
+        return moveMade
     }
     
-    mutating private func moveDown() {
+    mutating private func moveDown() -> Bool {
+        var moveMade = false
+        
         for j in 0..<columns {
             let column = tiles.map { $0[j] }
             let mergedColumn: [Tile] = mergeRow(column.reversed()).reversed()
             for i in 0..<rows {
+                if (tiles[i][j] != mergedColumn[i]) {
+                    moveMade = true
+                }
                 tiles[i][j] = mergedColumn[i]
             }
         }
+        
+        return moveMade
     }
     
     /**

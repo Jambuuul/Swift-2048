@@ -96,8 +96,12 @@ struct GameBoardView: View {
      - Parameter direction: Направление хода
      */
     func handleMove(_ direction: MoveDirection) {
+        var moveMade = false
         withAnimation(.easeInOut(duration: 0.4)) {
-            gameBoard.move(direction)
+            moveMade = gameBoard.move(direction)
+        }
+        if !moveMade {
+            return
         }
         SoundManager.shared.playTileSound()
         movesMade += 1
