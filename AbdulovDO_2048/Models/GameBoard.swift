@@ -31,6 +31,7 @@ struct GameBoard {
      Делает движение по правилам игры в зависимости от направления
 
      - Parameter direction:  Направление хода игрока
+     - Returns: true, если ход был сделан
      */
     mutating func move(_ direction: MoveDirection) -> Bool {
         var moved = false
