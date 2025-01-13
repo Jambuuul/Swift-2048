@@ -13,15 +13,19 @@ struct GameBoard {
     var tiles: [[Tile]]
     let rows: Int
     let columns: Int
+    var score: Int = 0
     
     init(_ n: Int, _ m: Int) {
         self.rows = n
         self.columns = m
         self.tiles = Array(repeating: Array(repeating: Tile(0), count: m), count: n)
+        
+        // в начале игры генерируем 2 плитки, чтобы было с чего начать
         generateTile()
         generateTile()
     }
-    
+
+
     
     /**
      Делает движение по правилам игры в зависимости от направления
@@ -81,7 +85,7 @@ struct GameBoard {
      - Parameter row:  Ряд, который необходимо обработать
      - Returns: Обработанный ряд
      */
-    private func mergeRow(_ row: [Tile]) -> [Tile] {
+    private mutating func mergeRow(_ row: [Tile]) -> [Tile] {
         let filtered = row.filter { $0.num != 0 } // Убираем пустые плитки
         var merged: [Tile] = []
         var skip = false
@@ -92,6 +96,7 @@ struct GameBoard {
                 continue
             }
             if i < filtered.count - 1 && filtered[i] == filtered[i + 1] {
+                score += filtered[i].num * 2
                 merged.append(Tile(filtered[i].num * 2))
                 skip = true
             } else {

@@ -10,7 +10,9 @@ import SwiftUI
 struct StartScreenView: View {
     @State private var n: Int = 4
     @State private var m: Int = 4
+    
     @State private var isGameStarted = false
+    @State private var isViewingLeaderboard = false
 
     var body: some View {
         NavigationView {
@@ -28,6 +30,7 @@ struct StartScreenView: View {
                 }
                 .frame(height: 200)
                 
+
                 NavigationLink(destination: GameBoardView(n: n, m: m), isActive: $isGameStarted) {
                     Button("Начать игру") {
                         isGameStarted = true
@@ -37,6 +40,16 @@ struct StartScreenView: View {
                     .foregroundColor(.white)
                     .cornerRadius(10)
                 }
+                NavigationLink(destination: LeaderboardView(), isActive: $isViewingLeaderboard) {
+                    Button("Посмотреть таблицу рекордов") {
+                        isViewingLeaderboard = true
+                    }
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+                }
+                
             }
         }
     }

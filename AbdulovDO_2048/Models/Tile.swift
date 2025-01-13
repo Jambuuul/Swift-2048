@@ -21,10 +21,10 @@ struct Tile: Hashable, Equatable {
 }
 
 /**
- Picks color for tile based on number on it.
+ Возвращает корректный цвет для номера плитки
 
- - Parameter value:  Number on tile
- - Returns: Correct color.
+ - Parameter value:  Номер на плитке
+ - Returns: Корректный цвет
  */
 private func getColor(_ value: Int) -> Color {
     

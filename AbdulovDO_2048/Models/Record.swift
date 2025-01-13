@@ -6,3 +6,16 @@
 //
 
 import Foundation
+
+
+// Структура рекорда для отображения в таблице
+struct Record: Codable, Identifiable {
+    var date: Date
+    var score: Int
+    var id: UUID = UUID()
+    
+    init(_ score: Int) {
+        date = Date()
+        self.score = score
+    }
+}

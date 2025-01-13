@@ -6,3 +6,23 @@
 //
 
 import Foundation
+
+// Класс, хранящий рекорды и сохраняющий их
+final class RecordsManager: ObservableObject {
+    
+    private let key = "Records"
+    
+    // делаем сет приватным
+    @Published private(set) var records: [Record] = [];
+    
+    init() {
+        records = UDmanager.UDread(forkey: key) ?? []
+    }
+    
+    func addRecord(_ score: Int) {
+        records.append( Record(score) );
+        records.sort { $0.score > $1.score }
+        
+        _ = UDmanager.UDsave(data: records, forkey: key)
+    }
+}

@@ -11,7 +11,7 @@ import SwiftUI
 struct AbdulovDO_2048App: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            StartScreenView()
         }
     }
 }

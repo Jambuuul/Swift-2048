@@ -9,6 +9,7 @@ import AVFoundation
 import Foundation
 
 
+// Класс, работающий со звуками
 final class SoundManager {
     static let shared = SoundManager()
     private var player: AVAudioPlayer?

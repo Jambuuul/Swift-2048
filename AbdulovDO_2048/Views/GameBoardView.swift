@@ -8,26 +8,37 @@
 import SwiftUI
 
 var movesMade: Int = 0
-
-// TODO: учет количества очков
 var score: Int = 0
 
 struct GameBoardView: View {
     let n: Int
     let m: Int
+    private var tileWidth: CGFloat = 50
+    private var tileHeight: CGFloat = 50
+    private var tileFont: Font = .subheadline
     
     @State var gameBoard: GameBoard
     @State var gameOver : Bool = false
     
+    @StateObject var recordsManager = RecordsManager()
     
     init(n: Int, m: Int) {
         self.n = n
         self.m = m
         self.gameBoard = GameBoard(n, m)
+        movesMade = 0
+        score = 0
+    
+        if (n > 6 || m > 6) {
+            tileWidth = 40
+            tileHeight = 40
+            tileFont = .footnote
+        }
     }
  
-    
     var body: some View {
+        Text("Score: \(gameBoard.score)")
+            .font(.largeTitle)
         Text("Moves made: \(movesMade)")
             .font(.largeTitle)
         
@@ -38,17 +49,16 @@ struct GameBoardView: View {
                         let cell = gameBoard.tiles[i][j]
                         RoundedRectangle(cornerRadius: 5)
                             .fill(cell.color)
-                            .frame(width: 50, height: 50)
+                            .frame(width: tileWidth, height: tileHeight)
                             .overlay(
                                 cell.num != 0 ?
                                 Text("\(cell.num)")
-                                    .font(.headline)
+                                    .font(tileFont)
                                     .foregroundColor(.white)
                                 :
                                 Text("")
                                     .foregroundColor(.gray)
                             )
-                            //.transition(.scale)
                     }
                 }
                 
@@ -57,50 +67,48 @@ struct GameBoardView: View {
         .padding()
         .background(.gray)
         .alert(isPresented: $gameOver ) {
-            Alert(title: Text("Game ended"), message: Text("Game over! Moves made: \(movesMade)"), dismissButton: .default(Text("Restart"), action: {gameOver = false; self.gameBoard = GameBoard(n, m)}))
+            Alert(title: Text("Game ended"), message: Text("Game over! Moves made: \(movesMade), score: \(score)"), dismissButton: .default(Text("Restart"), action: {gameOver = false;
+                saveScore(score);
+                self.gameBoard = GameBoard(n, m)}))
         }
         
         HStack {
-            // TODO: проверка того, меняет ли ход как-то положение на доске
             Button("⬅️") {
-                withAnimation(.easeInOut(duration: 0.4)) {
-                    gameBoard.move(.left)
-                    
-                }
-                SoundManager.shared.playTileSound()
-                movesMade += 1
-                gameOver = gameBoard.isGameOver()
-               
+                self.handleMove(.left)
             }
             Button("⬆️") {
-                withAnimation(.easeInOut(duration: 0.4)) {
-                    gameBoard.move(.up)
-                }
-                SoundManager.shared.playTileSound()
-                movesMade += 1
-                gameOver = gameBoard.isGameOver()
+                self.handleMove(.up)
             }
             Button("⬇️") {
-                withAnimation(.easeInOut(duration: 0.4)) {
-                    gameBoard.move(.down)
-                }
-                SoundManager.shared.playTileSound()
-                movesMade += 1
-                gameOver = gameBoard.isGameOver()
+                 self.handleMove(.down)
             }
             Button("➡️") {
-                withAnimation(.easeInOut(duration: 0.4)) {
-                    gameBoard.move(.right)
-                }
-                SoundManager.shared.playTileSound()
-                movesMade += 1
-                gameOver = gameBoard.isGameOver()
+                self.handleMove(.right)
             }
         }
         .font(.largeTitle)
         .padding()
     }
+    
+    /**
+     Обертка для обработки хода в зависимости от его направления
+
+     - Parameter direction: Направление хода
+     */
+    func handleMove(_ direction: MoveDirection) {
+        withAnimation(.easeInOut(duration: 0.4)) {
+            gameBoard.move(direction)
+        }
+        SoundManager.shared.playTileSound()
+        movesMade += 1
+        gameOver = gameBoard.isGameOver()
+    }
+    
+    func saveScore(_ score: Int) {
+        recordsManager.addRecord(score)
+    }
 }
+
 
 #Preview {
     GameBoardView(n: 4, m: 4)

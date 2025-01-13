@@ -8,8 +8,27 @@
 import SwiftUI
 
 struct LeaderboardView: View {
+    
+    @ObservedObject var recordsManager: RecordsManager = RecordsManager();
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            Text("Records")
+                .font(.largeTitle)
+                .padding()
+            
+            List(recordsManager.records) { record in
+                HStack {
+                    Text("Score: \(record.score)")
+                        .font(.headline)
+                    Spacer()
+                    Text(record.date, style: .date)
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                }
+            }
+        }
+        .padding()
     }
 }
 
