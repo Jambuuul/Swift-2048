@@ -9,14 +9,20 @@ import SwiftUI
 
 struct LeaderboardView: View {
     
-    @ObservedObject var recordsManager: RecordsManager = RecordsManager();
+
+    @ObservedObject var recordsManager = RecordsManager();
+    
+    
+    init() {
+        recordsManager.updateRecords()
+    }
     
     var body: some View {
         VStack {
             Text("Records")
                 .font(.largeTitle)
                 .padding()
-            
+
             if (recordsManager.records.isEmpty) {
                 Text("Таблица рекордов пока что пуста!")
             }
@@ -32,6 +38,13 @@ struct LeaderboardView: View {
             }
         }
         .padding()
+        .onAppear{
+            recordsManager.updateRecords()
+        }
+        
+        Button("Обновить") {
+            recordsManager.updateRecords()
+        }
     }
 }
 

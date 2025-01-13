@@ -16,6 +16,10 @@ final class RecordsManager: ObservableObject {
     @Published private(set) var records: [Record] = [];
     
     init() {
+        updateRecords()
+    }
+    
+    func updateRecords() {
         records = UDmanager.UDread(forkey: key) ?? []
     }
     
@@ -24,5 +28,6 @@ final class RecordsManager: ObservableObject {
         records.sort { $0.score > $1.score }
         
         _ = UDmanager.UDsave(data: records, forkey: key)
+        print(records)
     }
 }
