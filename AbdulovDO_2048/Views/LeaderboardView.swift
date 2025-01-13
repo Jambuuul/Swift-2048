@@ -17,6 +17,9 @@ struct LeaderboardView: View {
                 .font(.largeTitle)
                 .padding()
             
+            if (recordsManager.records.isEmpty) {
+                Text("Таблица рекордов пока что пуста!")
+            }
             List(recordsManager.records) { record in
                 HStack {
                     Text("Score: \(record.score)")
