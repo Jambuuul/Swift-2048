@@ -7,15 +7,14 @@
 
 import SwiftUI
 
-var movesMade: Int = 0
-var score: Int = 0
-
 struct GameBoardView: View {
     let n: Int
     let m: Int
     private var tileWidth: CGFloat = 50
     private var tileHeight: CGFloat = 50
     private var tileFont: Font = .subheadline
+    
+    @State var movesMade: Int = 0
     
     @State var gameBoard: GameBoard
     @State var gameOver : Bool = false
@@ -27,7 +26,6 @@ struct GameBoardView: View {
         self.m = m
         self.gameBoard = GameBoard(n, m)
         movesMade = 0
-        score = 0
     
         if (n > 6 || m > 6) {
             tileWidth = 40
@@ -67,8 +65,8 @@ struct GameBoardView: View {
         .padding()
         .background(.gray)
         .alert(isPresented: $gameOver ) {
-            Alert(title: Text("Game ended"), message: Text("Game over! Moves made: \(movesMade), score: \(score)"), dismissButton: .default(Text("Restart"), action: {gameOver = false;
-                saveScore(score);
+            Alert(title: Text("Game ended"), message: Text("Game over! Moves made: \(movesMade), score: \(gameBoard.score)"), dismissButton: .default(Text("Restart"), action: {gameOver = false;
+                saveScore(gameBoard.score);
                 self.gameBoard = GameBoard(n, m)}))
         }
         
@@ -88,6 +86,11 @@ struct GameBoardView: View {
         }
         .font(.largeTitle)
         .padding()
+        
+        
+        Button("End game") {
+            gameOver = true
+        }
     }
     
     /**
@@ -100,9 +103,11 @@ struct GameBoardView: View {
         withAnimation(.easeInOut(duration: 0.4)) {
             moveMade = gameBoard.move(direction)
         }
+        
         if !moveMade {
             return
         }
+        
         SoundManager.shared.playTileSound()
         movesMade += 1
         gameOver = gameBoard.isGameOver()
